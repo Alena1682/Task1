@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#8c1515" />
+    <title>个人待办清单</title>
+    <link rel="stylesheet" href="styles.css?v=20260911d" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="待办导航">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">✓</div>
+          <div>
+            <p class="brand-kicker">PERSONAL TASKS</p>
+            <h1>个人待办</h1>
+          </div>
+        </div>
+
+        <nav class="main-nav" aria-label="主菜单">
+          <p class="nav-label">我的工作区</p>
+          <button class="nav-item is-active" type="button" data-view="inbox">
+            <span class="nav-icon" aria-hidden="true">▤</span>
+            <span class="nav-text">任务清单</span>
+            <span class="nav-count" id="inboxCount">0</span>
+          </button>
+          <button class="nav-item" type="button" data-view="today">
+            <span class="nav-icon" aria-hidden="true">◷</span>
+            <span class="nav-text">我的一天</span>
+            <span class="nav-count" id="todayCount">0</span>
+          </button>
+          <button class="nav-item" type="button" data-view="important">
+            <span class="nav-icon nav-icon-star" aria-hidden="true">★</span>
+            <span class="nav-text">重要任务</span>
+            <span class="nav-count" id="importantCount">0</span>
+          </button>
+          <button class="nav-item" type="button" data-view="planned">
+            <span class="nav-icon" aria-hidden="true">▦</span>
+            <span class="nav-text">计划内</span>
+            <span class="nav-count" id="plannedCount">0</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-message">
+          <span class="message-icon" aria-hidden="true">✦</span>
+          <p>把重要的事写下来，专心完成眼前这一件。</p>
+        </div>
+        <div class="sidebar-footer">
+          <span class="save-dot" aria-hidden="true"></span>
+          <span>自动保存到本设备</span>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="page-kicker" id="viewKicker">ALL TASKS</p>
+            <h2 id="viewTitle">任务清单</h2>
+            <p class="page-subtitle" id="viewSubtitle">把要做的事先记下来，再慢慢完成。</p>
+          </div>
+          <div class="today-badge">
+            <span>今天</span>
+            <strong id="todayLabel">—</strong>
+          </div>
+        </header>
+
+        <section class="content-card" aria-live="polite">
+          <form class="add-task-form" id="taskForm">
+            <button class="add-icon" id="focusTaskInputButton" type="button" aria-label="开始输入任务" title="开始输入任务">＋</button>
+            <label class="sr-only" for="taskInput">添加一项任务</label>
+            <input id="taskInput" name="task" type="text" maxlength="200" autocomplete="off" placeholder="添加一项任务…" />
+            <button class="primary-button" type="submit">添加</button>
+          </form>
+
+          <div class="list-heading-row">
+            <div>
+              <h3 id="listSectionTitle">全部任务</h3>
+              <p id="listSectionHint">新添加的任务会显示在这里。</p>
+            </div>
+            <label class="select-all-control" for="selectAllTasks">
+              <input id="selectAllTasks" type="checkbox" />
+              <span>全选</span>
+            </label>
+          </div>
+
+          <div class="bulk-toolbar" id="bulkToolbar" hidden>
+            <span><strong id="selectedCount">0</strong> 项任务已选择</span>
+            <div class="bulk-actions">
+              <button class="text-button" id="clearSelectionButton" type="button">取消选择</button>
+              <button class="danger-button" id="deleteSelectedButton" type="button"><span aria-hidden="true">⌫</span> 删除所选</button>
+            </div>
+          </div>
+
+          <div class="task-list" id="taskList"></div>
+          <div class="empty-state" id="emptyState" hidden>
+            <div class="empty-state-mark" aria-hidden="true">○</div>
+            <h3 id="emptyStateTitle">还没有任务</h3>
+            <p id="emptyStateText">在上方输入一件要做的事，开始你的清单。</p>
+          </div>
+        </section>
+        <p class="main-footer-note"><span aria-hidden="true">·</span> 你的每一步，都算数。</p>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="taskModal" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="modal-close" id="closeModalButton" type="button" aria-label="关闭编辑窗口">×</button>
+        <p class="page-kicker">EDIT TASK</p>
+        <h2 id="modalTitle">编辑任务</h2>
+        <p class="modal-intro">修改内容，或为这项任务安排日期和时间。</p>
+
+        <form id="taskEditForm">
+          <label class="field-label" for="editTaskText">任务内容</label>
+          <textarea id="editTaskText" maxlength="200" rows="3" required placeholder="写下任务内容…"></textarea>
+
+          <div class="field-grid">
+            <div>
+              <label class="field-label" for="editTaskDateDisplay">日期 <span>（可选）</span></label>
+              <div class="date-select-group">
+                <input id="editTaskDateDisplay" class="date-display-input" type="text" readonly placeholder="年 / 月 / 日" aria-label="选择任务日期，格式为年 / 月 / 日" />
+                <button id="editTaskDateButton" class="date-picker-button" type="button" aria-label="打开日期选择器" title="打开日期选择器">
+                  <svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M7 3.5h1.5V5h7V3.5H17V5h1.5A2.5 2.5 0 0 1 21 7.5v11A2.5 2.5 0 0 1 18.5 21h-13A2.5 2.5 0 0 1 3 18.5v-11A2.5 2.5 0 0 1 5.5 5H7V3.5ZM5.5 6.5a1 1 0 0 0-1 1v2h15v-2a1 1 0 0 0-1-1h-13Zm14 4.5h-15v7.5a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1V11ZM7 13h2v2H7v-2Zm4 0h2v2h-2v-2Zm4 0h2v2h-2v-2ZM7 16h2v2H7v-2Zm4 0h2v2h-2v-2Z" />
+                  </svg>
+                </button>
+                <button id="editTaskDateClearButton" class="date-clear-button" type="button" aria-label="清除任务日期" title="清除日期" hidden>×</button>
+                <input id="editTaskDate" class="native-date-input" type="date" tabindex="-1" aria-hidden="true" />
+              </div>
+            </div>
+            <div>
+              <label class="field-label" for="editTaskHour">时间 <span>（可选）</span></label>
+              <div class="time-select-group" id="editTaskTime" aria-label="选择任务时间">
+                <select id="editTaskHour" aria-label="选择小时">
+                  <option value="">小时</option>
+                </select>
+                <span class="time-colon" aria-hidden="true">:</span>
+                <select id="editTaskMinute" aria-label="选择分钟">
+                  <option value="">分钟</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <label class="important-toggle" for="editTaskImportant">
+            <input id="editTaskImportant" type="checkbox" />
+            <span class="important-star" aria-hidden="true">★</span>
+            <span>标记为重要任务</span>
+          </label>
+
+          <div class="modal-actions">
+            <button class="secondary-button" id="cancelModalButton" type="button">取消</button>
+            <button class="primary-button" type="submit">保存更改</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <script src="app.js?v=20260911d"></script>
+  </body>
+</html>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#8c1515" />
     <title>个人待办清单</title>
-    <link rel="stylesheet" href="styles.css?v=20260911d" />
+    <link rel="stylesheet" href="styles.css?v=20260911e" />
   </head>
   <body>
     <div class="app-shell">
@@ -67,9 +67,8 @@
 
         <section class="content-card" aria-live="polite">
           <form class="add-task-form" id="taskForm">
-            <button class="add-icon" id="focusTaskInputButton" type="button" aria-label="开始输入任务" title="开始输入任务">＋</button>
             <label class="sr-only" for="taskInput">添加一项任务</label>
-            <input id="taskInput" name="task" type="text" maxlength="200" autocomplete="off" placeholder="添加一项任务…" />
+            <input id="taskInput" name="task" type="text" maxlength="200" autocomplete="off" placeholder="点击文本输入框输入任务，例如：完成课程作业…" />
             <button class="primary-button" type="submit">添加</button>
           </form>
 
@@ -157,6 +156,6 @@
     </div>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-    <script src="app.js?v=20260911d"></script>
+    <script src="app.js?v=20260911e"></script>
   </body>
 </html>

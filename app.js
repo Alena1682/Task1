@@ -381,7 +381,7 @@
     render();
   }));
   el.taskForm.addEventListener("submit", addTask);
-  el.focusTaskInputButton.addEventListener("click", focusTaskInput);
+  if (el.focusTaskInputButton) el.focusTaskInputButton.addEventListener("click", focusTaskInput);
   el.taskList.addEventListener("change", (event) => {
     const row = event.target.closest("[data-task-id]");
     if (!row) return;

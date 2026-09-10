@@ -141,6 +141,12 @@
     return formatDate(value);
   }
 
+  function getTomorrowDate() {
+    const date = new Date(`${today}T00:00:00`);
+    date.setDate(date.getDate() + 1);
+    return toDateInputValue(date);
+  }
+
   function defaultState() {
     return {
       view: "inbox",
@@ -307,7 +313,11 @@
       el.taskInput.focus();
       return;
     }
-    state.tasks.push({ id: createId("task"), text, completed: false, important: false, date: null, time: null, createdAt: Date.now(), updatedAt: Date.now() });
+    const taskDefaults = {
+      date: state.view === "today" ? today : state.view === "planned" ? getTomorrowDate() : null,
+      important: state.view === "important"
+    };
+    state.tasks.push({ id: createId("task"), text, completed: false, important: taskDefaults.important, date: taskDefaults.date, time: null, createdAt: Date.now(), updatedAt: Date.now() });
     el.taskForm.reset();
     render();
     el.taskInput.focus();
